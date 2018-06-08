@@ -1,3 +1,4 @@
+#include "EEPROM.h"
 
 //================================== LCD ========================================================================
 #include <Wire.h>
@@ -24,15 +25,33 @@ uint32_t TM_prev_301ms = 0L;
 #define KEYBOARD_minus 5
 
 //======================================= MENU ========================================================================
-bool MENU_is_menu = false;
-int8_t MENU_item_num = 0;
+bool MENU_is_menu = false; //show menu or mainScreen
 
-#define MENU_item_size 3
-String MENU_item_name[3] = {"UDO count ml", "FEEDER seconds", "FEEDER count"};
+/* Меню состоит из параметров в количестве MENU_item_size
+    каждый параметр может принимать значения из соответствующего массива MENU_item_*_values
+    в EEPROM для каждого параметра хранится позиция в массиве значений
+    Например, параметр_0 хранит в ЕЕПРОМ-ячейке по адресу 0 число 2
+    Значит параметр_0== MENU_item_0_values[2] =="SAE"
+    Например, параметр_1 хранит в ЕЕПРОМ-ячейке по адресу 1 число 0
+    Значит параметр_1== MENU_item_1_values[0] ==3
+*/
 
+int8_t MENU_item_num_curr = 0; //curr item num
+#define MENU_item_size 4 //count items in menu
+String MENU_item_name[MENU_item_size] = {"FISH TYPE", "FEED SECONDS", "FEED COUNT/DAY", "UDO ML/DAY"};
+int8_t MENU_item_value_pos[MENU_item_size] = {0, 0, 0, 0}; //Не uint, чтобы делать ротацию по кругу. Хотя 0..255 for EEPROM storage. Item_0 real value = MENU_item_values_0[MENU_item_value_pos[0]]
+uint8_t MENU_item_value_pos_size[MENU_item_size] = {3, 5, 3, 7};
 
-void setup() {  
+//значения параметров, позиция в массиве хранится в ЕЕПРОМ
+String MENU_item_0_values[3] = {"NEON", "GUPPI", "SAE"};
+uint8_t MENU_item_1_values[5] = {3, 6, 12, 24, 30};
+uint8_t MENU_item_2_values[3] = {1, 2, 3};
+uint8_t MENU_item_3_values[7] = {1, 2, 3, 4, 6, 8, 10};
+// array length = sizeof(myarr)/sizeof(int)  if myarr = array of int => too hard!
+
+void setup() {
   LCDi2c_init();
+  CONFIG_load();
 }
 
 void loop() {
