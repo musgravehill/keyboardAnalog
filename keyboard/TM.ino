@@ -16,7 +16,7 @@ void TM_21ms() {
 
 void TM_301ms() {
   MENU_keyboard_check();
-  MENU_render();
+  LCDi2c_render();
 }
 
 
