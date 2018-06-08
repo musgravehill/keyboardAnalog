@@ -4,7 +4,6 @@ void LCDi2c_init() {
   lcd.print("MAIN SCREEN");
 }
 void LCDi2c_render() {
-  lcd.clear();
   if (MENU_is_menu) {
     MENU_render_menu();
   } else {

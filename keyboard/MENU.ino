@@ -1,6 +1,10 @@
 void MENU_keyboard_check() {
   uint8_t btn_code = KEYBOARD_get();
 
+  if (btn_code > 0) {
+    lcd.clear();
+  }
+
   switch (btn_code) {
     case KEYBOARD_menu:
       MENU_btn_menu();
