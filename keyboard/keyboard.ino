@@ -25,14 +25,13 @@ uint32_t TM_prev_301ms = 0L;
 
 //======================================= MENU ========================================================================
 bool MENU_is_menu = false;
-uint8_t MENU_item_num = 0;
+int8_t MENU_item_num = 0;
 
 #define MENU_item_size 3
-String MENU_item_name[3] = {"UDO count ml", "FEEDER feed seconds", "FEEDER count feed"};
+String MENU_item_name[3] = {"UDO count ml", "FEEDER seconds", "FEEDER count"};
 
 
-void setup() {
-  Serial.begin(9600);
+void setup() {  
   LCDi2c_init();
 }
 
