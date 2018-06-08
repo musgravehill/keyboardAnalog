@@ -1,34 +1,47 @@
+
+//================================== LCD ========================================================================
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
+LiquidCrystal_I2C lcd(0x27, 16, 2);
+
+//================================== TIMEMACHINE =================================================================
+uint32_t TM_prev_21ms = 0L;
+uint32_t TM_prev_301ms = 0L;
+
+//================================== KEYBOARD ========================================================================
 /*
   -----------GND VCC OUT ------------
-  ------------- * * * ---------------
-  -----723 ------------------- 0 ----
-  --------------- 131 ---------------
-  -----488 ------------------ 321 ---
+  -----723 L ------------------- 0 R----
+  --------------- 131 M---------------
+  -----488 back ------------------ 321 select ---
 */
 
+#define KEYBOARD_pin A0
+#define KEYBOARD_menu 1
+#define KEYBOARD_select 2
+#define KEYBOARD_left 3
+#define KEYBOARD_right 4
+#define KEYBOARD_back 5
 
+//======================================= MENU ========================================================================
+uint8_t MENU_curr_btn = 0;
 
-int sensorPin = A0;    // select the input pin for the potentiometer
-
-int sensorValue = 0;  // variable to store the value coming from the sensor
 
 void setup() {
   Serial.begin(9600);
+  LCDi2c_init();
 }
 
 void loop() {
-  // read the value from the sensor:
-  sensorValue = key();
-  delay(500);
-  Serial.println(sensorValue, DEC);
+  TM_loop();
 }
 
-byte key(){  
-  int val = analogRead(0);
-    if (val < 50) return 1;
-    else if (val < 150) return 2;
-    else if (val < 350) return 3;
-    else if (val < 500) return 4;
-    else if (val < 800) return 5;
-    else return 0;  
+uint8_t KEYBOARD_check() {
+  uint16_t val = analogRead(KEYBOARD_pin);
+  if (val < 50) return KEYBOARD_right;
+  else if (val < 150) return KEYBOARD_menu;
+  else if (val < 350) return KEYBOARD_select;
+  else if (val < 500) return KEYBOARD_back;
+  else if (val < 800) return KEYBOARD_left;
+  else return 0;
 }
