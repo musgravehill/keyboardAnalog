@@ -1,4 +1,4 @@
-#include "EEPROM.h"
+//#include "EEPROM.h"
 
 //================================== LCD ========================================================================
 #include <Wire.h>
@@ -49,9 +49,33 @@ uint8_t MENU_item_2_values[3] = {1, 2, 3};
 uint8_t MENU_item_3_values[7] = {1, 2, 3, 4, 6, 8, 10};
 // array length = sizeof(myarr)/sizeof(int)  if myarr = array of int => too hard!
 
+//============================== encoder ======================================================
+#define ENCODER_pin_1 2 //interrupt
+#define ENCODER_pin_2 3
+int8_t ENCODER_val = 0;
+
+//========================== EEPROM AT24C32N = 32k bit /8 = 4096 bytes? But address is byte, max 255 :-) =======================================================
+#define EEPROM24C_device 0x57 //Адрес устройства
+
 void setup() {
-  LCDi2c_init();
-  CONFIG_load();
+  Wire.begin();
+  //LCDi2c_init();
+  //CONFIG_load();
+  //ENCODER_init();
+  Serial.begin(9600);
+
+  EEPROM24C_writeByte(EEPROM24C_device, 1, 1);
+  EEPROM24C_writeByte(EEPROM24C_device, 2, 1);
+  EEPROM24C_writeByte(EEPROM24C_device, 3, 0);
+  EEPROM24C_writeByte(EEPROM24C_device, 4, 118);
+
+  Serial.println(EEPROM24C_readByte(EEPROM24C_device, 1), DEC);
+  Serial.println(EEPROM24C_readByte(EEPROM24C_device, 2), DEC);
+  Serial.println(EEPROM24C_readByte(EEPROM24C_device, 3), DEC);
+  Serial.println(EEPROM24C_readByte(EEPROM24C_device, 4), DEC);
+
+
+
 }
 
 void loop() {

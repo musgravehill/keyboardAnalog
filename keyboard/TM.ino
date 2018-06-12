@@ -11,7 +11,7 @@ void TM_loop() {
 }
 
 void TM_511ms() {
-  
+  //Serial.println(ENCODER_val/4);
 }
 
 void TM_301ms() {
